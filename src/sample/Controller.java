@@ -2,13 +2,18 @@ package sample;
 
 import com.opencsv.CSVWriter;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,7 +24,8 @@ public class Controller {
 
     public List<Card> list1 = new ArrayList<>();
     public List<Card> list2 = new ArrayList<>();
-    public int turns;
+    public static int turns;
+    public static String name;
 
     @FXML private ImageView img1;
     @FXML private ImageView img2;
@@ -30,7 +36,7 @@ public class Controller {
     @FXML private Label cards1;
     @FXML private Label cards2;
 
-    @FXML private TextField username;
+    @FXML public TextField username;
 
     public void draw()
     {
@@ -70,9 +76,9 @@ public class Controller {
 
        cards1.setText(Integer.toString(list1.size()));
        cards2.setText(Integer.toString(list2.size()));
-       writeDataLineByLine("test.csv");
-
        turns =0;
+
+
 }
     public String imageFileName(Card c, boolean isSelected) {
         String str = "cards/";
@@ -179,39 +185,61 @@ public class Controller {
         if (list1.size()<=0)
         {
             System.out.println("Player 2 Wins the Game!");
+            writeDataLineByLine("scores.csv",1);
         }
         if (list2.size()<=0)
         {
             System.out.println("Player 1 Wins the Game!");
+            writeDataLineByLine("scores.csv",0);
+
         }
-
-
-
 
     }
 
-    public  void writeDataLineByLine(String filePath)
+
+public void clicked( ) throws IOException {
+        name = username.getText();
+    Stage primaryStage = new Stage();
+    Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+    primaryStage.setTitle("Hello World");
+    primaryStage.setScene(new Scene(root, 842, 462));
+    primaryStage.show();
+
+
+}
+
+public void test()
+{
+    turns = 50;
+    System.out.println("Player 1 Wins the Game!");
+    writeDataLineByLine("scores.csv",1);
+
+}
+
+
+    public  void writeDataLineByLine(String filePath, int winner )
     {
 
         File file = new File(filePath);
         try {
-            FileWriter outputfile = new FileWriter(file);
+            FileWriter outputfile = new FileWriter(file, true);
 
             CSVWriter writer = new CSVWriter(outputfile);
 
-            // adding header to csv
-            //String[] header = {username.getText()};
-            String[] header = { "Name", "Class", "Marks" };
-
-            writer.writeNext(header);
-
-            // add data to csv
-            //String[] data1 = {Integer.toString(turns)};
-            String[] data1 = { "Aman", "10", "620" };
-
-            writer.writeNext(data1);
 
 
+
+
+            if (winner ==1) {
+            writer.writeNext(new String[]{name + " is a loser"});
+
+            }
+
+            else
+            {
+                writer.writeNext(new String[]{name + ", " + turns});
+
+            }
             writer.close();
         }
         catch (IOException e) {

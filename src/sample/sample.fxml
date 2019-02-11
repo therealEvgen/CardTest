@@ -41,5 +41,6 @@
             <Font size="27.0" />
          </font>
       </Label>
+      <Button fx:id="tester" mnemonicParsing="false" onAction="#test" text="Button" GridPane.columnIndex="3" GridPane.rowIndex="5" />
    </children>
 </GridPane>
