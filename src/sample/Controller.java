@@ -1,5 +1,7 @@
 package sample;
 
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
 import com.opencsv.CSVWriter;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,9 +17,11 @@ import javafx.stage.Stage;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Controller {
@@ -208,7 +212,31 @@ public void clicked( ) throws IOException {
 
 }
 
-public void test()
+
+    public static void readscores( )
+    {
+
+        try {
+
+            FileReader filereader = new FileReader("scores.csv");
+
+            CSVReader csvReader = new CSVReader(filereader);
+            String[] nextRecord;
+
+            while ((nextRecord = csvReader.readNext()) != null) {
+                for (String cell : nextRecord) {
+                    System.out.print(cell + "\t");
+                }
+                System.out.println();
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void test()
 {
     turns = 50;
     System.out.println("Player 1 Wins the Game!");
