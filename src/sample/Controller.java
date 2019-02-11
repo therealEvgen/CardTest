@@ -1,12 +1,17 @@
 package sample;
 
+import com.opencsv.CSVWriter;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +19,7 @@ public class Controller {
 
     public List<Card> list1 = new ArrayList<>();
     public List<Card> list2 = new ArrayList<>();
+    public int turns;
 
     @FXML private ImageView img1;
     @FXML private ImageView img2;
@@ -21,6 +27,10 @@ public class Controller {
     @FXML private ImageView img4;
     @FXML private ImageView img5;
     @FXML private ImageView img6;
+    @FXML private Label cards1;
+    @FXML private Label cards2;
+
+    @FXML private TextField username;
 
     public void draw()
     {
@@ -49,40 +59,20 @@ public class Controller {
     Deck deck = new Deck(RANKS, SUITS, POINT_VALUES);
         deck.shuffle();
 
-    //List<Card> list1 = new ArrayList<>();
-    //List<Card> list2 = new ArrayList<>();
 
-        for (int i=0;i<25;i++)
-    {
-        list1.add(deck.returncard(i));
-    }
-        for (int i=26;i<deck.size();i++)
-    {
-        list2.add(deck.returncard(i));
-    }
+       for(int i=0;i<52;i++) {
+           if (i % 2 == 1)
+               list1.add(deck.returncard(i));
+           else
+               list2.add(deck.returncard(i));
+       }
 
 
-        System.out.println(" ");
-        System.out.println("list 1");
-        for (Card num : list1) {
-        System.out.println(num);
-    }
-        System.out.println("list 1");
+       cards1.setText(Integer.toString(list1.size()));
+       cards2.setText(Integer.toString(list2.size()));
+       writeDataLineByLine("test.csv");
 
-
-        System.out.println(" ");
-        System.out.println("list 2");
-        for (Card num2 : list2) {
-        System.out.println(num2);
-    }
-        System.out.println("List 2 ");
-        System.out.println(" ");
-
-
-
-
-
-
+       turns =0;
 }
     public String imageFileName(Card c, boolean isSelected) {
         String str = "cards/";
@@ -99,6 +89,10 @@ public class Controller {
 
     public  void deal()
     {
+        img1.setImage(null);
+        img4.setImage(null);
+        img7.setImage(null);
+        img6.setImage(null);
 
         Card temp1 = list1.get(0);
         Card temp2 = list2.get(0);
@@ -123,11 +117,25 @@ public class Controller {
             temp3.add(list1.get(0));
             temp4.add(list2.get(0));
 
+            Image back = new Image("/cards/back1.GIF");
+            img1.setImage(back);
+            img4.setImage(back);
+
+
+
             list1.remove(0);
             list2.remove(0);
 
             temp3.add(list1.get(0));
             temp4.add(list2.get(0));
+
+            String player1card2 = imageFileName(list1.get(0),true);
+            String player2card2 = imageFileName(list2.get(0),true);
+
+            Image image3 = new Image(player1card2);
+            Image image4 = new Image(player2card2);
+            img7.setImage(image3);
+            img6.setImage(image4);
 
             list1.remove(0);
             list2.remove(0);
@@ -163,6 +171,11 @@ public class Controller {
             }
 
 
+        cards1.setText(Integer.toString(list1.size()));
+        cards2.setText(Integer.toString(list2.size()));
+
+        turns ++;
+
         if (list1.size()<=0)
         {
             System.out.println("Player 2 Wins the Game!");
@@ -172,17 +185,38 @@ public class Controller {
             System.out.println("Player 1 Wins the Game!");
         }
 
-        /*for (Card num : list1) {
-            System.out.println(num);
-        }
 
-        System.out.println("List 1 ");
-        System.out.println(" ");
 
-        for (Card num2 : list2) {
-            System.out.println(num2);
+
+    }
+
+    public  void writeDataLineByLine(String filePath)
+    {
+
+        File file = new File(filePath);
+        try {
+            FileWriter outputfile = new FileWriter(file);
+
+            CSVWriter writer = new CSVWriter(outputfile);
+
+            // adding header to csv
+            //String[] header = {username.getText()};
+            String[] header = { "Name", "Class", "Marks" };
+
+            writer.writeNext(header);
+
+            // add data to csv
+            //String[] data1 = {Integer.toString(turns)};
+            String[] data1 = { "Aman", "10", "620" };
+
+            writer.writeNext(data1);
+
+
+            writer.close();
         }
-        */
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 
