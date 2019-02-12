@@ -84,7 +84,18 @@ public class Controller {
 
 
 }
-
+    public String imageFileName(Card c, boolean isSelected) {
+        String str = "cards/";
+        if (c == null) {
+            return "cards/back1.GIF";
+        }
+        str += c.rank() + c.suit();
+        if (isSelected) {
+            str += "S";
+        }
+        str += ".GIF";
+        return str;
+    }
 
     public  void deal()
     {
